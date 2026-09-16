@@ -1,0 +1,70 @@
+// =============================================================================
+// POWER BI DAX MEASURES - MARKETING ANALYTICS DASHBOARD
+// Standardized DAX formulas for KPIs, conversions, CPA, and ROI calculations
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// 1. CORE FINANCIAL & VOLUME MEASURES
+// -----------------------------------------------------------------------------
+Total Spend = 
+SUM('fact_marketing_performance'[Marketing_Spend])
+
+Total Revenue = 
+SUM('fact_marketing_performance'[Revenue])
+
+Total Net Profit = 
+[Total Revenue] - [Total Spend]
+
+Total Impressions = 
+SUM('fact_marketing_performance'[Impressions])
+
+Total Clicks = 
+SUM('fact_marketing_performance'[Clicks])
+
+Total Leads = 
+SUM('fact_marketing_performance'[Leads])
+
+Total Conversions = 
+SUM('fact_marketing_performance'[Conversions])
+
+// -----------------------------------------------------------------------------
+// 2. RATIO & EFFICIENCY DAX MEASURES
+// -----------------------------------------------------------------------------
+Overall CTR % = 
+DIVIDE([Total Clicks], [Total Impressions], 0) * 100
+
+Overall Conversion Rate % = 
+DIVIDE([Total Conversions], [Total Leads], 0) * 100
+
+Cost Per Click (CPC) = 
+DIVIDE([Total Spend], [Total Clicks], 0)
+
+Cost Per Lead (CPL) = 
+DIVIDE([Total Spend], [Total Leads], 0)
+
+Blended Cost Per Acquisition (CPA) = 
+DIVIDE([Total Spend], [Total Conversions], 0)
+
+Revenue Per Conversion (RPC) = 
+DIVIDE([Total Revenue], [Total Conversions], 0)
+
+Overall ROI % = 
+DIVIDE([Total Revenue] - [Total Spend], [Total Spend], 0) * 100
+
+Average Order Value (AOV) = 
+AVERAGE('dim_products'[Order_Value])
+
+// -----------------------------------------------------------------------------
+// 3. TIME INTELLIGENCE DAX MEASURES
+// -----------------------------------------------------------------------------
+Revenue Prior Month = 
+CALCULATE(
+    [Total Revenue],
+    DATEADD('dim_campaigns'[Campaign_Date], -1, MONTH)
+)
+
+MoM Revenue Growth % = 
+VAR PrevMonth = [Revenue Prior Month]
+VAR CurrMonth = [Total Revenue]
+RETURN
+DIVIDE(CurrMonth - PrevMonth, PrevMonth, 0) * 100
